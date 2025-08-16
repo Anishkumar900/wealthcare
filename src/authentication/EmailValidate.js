@@ -41,7 +41,7 @@ export default function EmailValidate() {
 
             toast.success("Registration successful!");
             setTimeout(()=>{
-                navigate("/auth/login")
+                navigate("/")
             },1000)
         } catch (error) {
             // console.error(error); // helpful for debugging
@@ -150,7 +150,7 @@ export default function EmailValidate() {
 
                 <div className="flex justify-center pt-3  text-sm font-medium">
                     Already have an account?
-                    <Link className="hover:underline text-blue-800 hover:text-blue-900 transition-colors px-2" to="/auth/login">
+                    <Link className="hover:underline text-blue-800 hover:text-blue-900 transition-colors px-2" to="/">
                         Login
                     </Link>
                 </div>

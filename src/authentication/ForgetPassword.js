@@ -96,7 +96,7 @@ export default function ForgetPassword() {
 
       toast.success("Password updated successfully! Please login with your new password.");
       setTimeout(() => {
-        navigate("/auth/login");
+        navigate("/");
       }, 1000);
     } catch (error) {
       // console.log(error.response.data);
@@ -209,7 +209,7 @@ export default function ForgetPassword() {
           <Link className="hover:underline text-blue-800 hover:text-blue-900 transition-colors px-2" to="/auth/register">
             Register
           </Link>
-          <Link className="hover:underline text-blue-800 hover:text-blue-900 transition-colors px-2" to="/auth/login">
+          <Link className="hover:underline text-blue-800 hover:text-blue-900 transition-colors px-2" to="/">
             login
           </Link>
         </div>

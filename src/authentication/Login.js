@@ -47,7 +47,7 @@ export default function Login() {
       toast.success("Login successful.");
       localStorage.setItem("token", response.data.token);
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       }, 1000)
     }
     catch (error) {
@@ -66,7 +66,7 @@ export default function Login() {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        navigate("/auth/login"); // no token → go to login
+        navigate("/"); // no token → go to login
         return;
       }
 
@@ -83,13 +83,13 @@ export default function Login() {
         // token valid → go to home page
         if (response.status === 200) {
           // setUser(response.data);
-          navigate("/"); // or your desired route
+          navigate("/home"); // or your desired route
         }
       } catch (error) {
         // token invalid → clear and go to login
         // console.error("JWT verification failed:", error);
         localStorage.removeItem("token");
-        navigate("/auth/login");
+        navigate("/");
       }
     };
 

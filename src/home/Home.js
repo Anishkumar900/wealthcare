@@ -17,7 +17,7 @@ export default function Home() {
             const token = localStorage.getItem("token");
 
             if (!token) {
-                navigate("/auth/login"); 
+                navigate("/"); 
                 return;
             }
 
@@ -33,7 +33,7 @@ export default function Home() {
                 }
             } catch (error) {
                 localStorage.removeItem("token");
-                navigate("/auth/login");
+                navigate("/");
             }
         };
 

@@ -15,7 +15,7 @@ export default function Header() {
 
   const logout=()=>{
     localStorage.removeItem("token");
-    navigate("/auth/login");
+    navigate("/");
   }
 
   useEffect(() => {

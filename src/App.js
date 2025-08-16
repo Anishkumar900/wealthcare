@@ -10,8 +10,8 @@ export default function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Login />} />
         <Route path="/auth/register" element={<Registion />} />
         <Route path="/auth/forget-password" element={<ForgetPassword />} />
         <Route path="/auth/email-validate" element={<EmailValidate />} />

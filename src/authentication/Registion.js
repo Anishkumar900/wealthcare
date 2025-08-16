@@ -266,7 +266,7 @@ export default function Registion() {
 
         <div className="flex justify-center pt-3  text-sm font-medium">
           Already have an account?
-          <Link className="hover:underline text-blue-800 hover:text-blue-900 transition-colors px-2" to="/auth/login">
+          <Link className="hover:underline text-blue-800 hover:text-blue-900 transition-colors px-2" to="/">
             Login
           </Link>
         </div>
