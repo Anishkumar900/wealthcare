@@ -35,6 +35,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(form)
+    toast.dismiss();
     setDecibleButton(true);
 
     try {

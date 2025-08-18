@@ -5,6 +5,7 @@ import AddMoney from './AddMoney';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserProvider';
+import ShowExpenses from './ShowExpenses';
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
 export default function Home() {
@@ -29,6 +30,7 @@ export default function Home() {
                     { headers: { "Content-Type": "application/json" } }
                 );
                 if (response.status === 200) {
+                  // console.log(response.data);
                     setUser(response.data)
                 }
             } catch (error) {
@@ -43,10 +45,12 @@ export default function Home() {
   return (
     <div>
       <Header/>
-      <div className='py-16 z-0'>
+      <div className='pt-16 z-0'>
         <AddMoney/>
+        <ShowExpenses/>
+        <Footer />
       </div>
-      <Footer />
+      
     </div>
   )
 }
