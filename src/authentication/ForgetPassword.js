@@ -87,7 +87,7 @@ export default function ForgetPassword() {
       );
       // console.log(response);
 
-      if (form.otp == "") {
+      if (form.otp === "") {
         toast.success("Please verify your email first!");
         setShowOTP(true);
         setDecibleButton(false);
@@ -100,7 +100,7 @@ export default function ForgetPassword() {
       }, 1000);
     } catch (error) {
       // console.log(error.response.data);
-      if(error.response.data == "OTP didn't match or expired"){
+      if(error.response.data === "OTP didn't match or expired"){
         toast.error("OTP didn't match or expired");
         setDecibleButton(false);
         return;
