@@ -5,6 +5,9 @@ import Login from './authentication/Login';
 import Registion from './authentication/Registion';
 import ForgetPassword from './authentication/ForgetPassword';
 import EmailValidate from './authentication/EmailValidate';
+import Bank from './bank/Bank';
+import BankDetailsPage from './bank/BankDetailsPage';
+
 
 export default function App() {
   return (
@@ -12,7 +15,9 @@ export default function App() {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/" element={<Login />} />
+        <Route path='/bank' element={<Bank/>}/>
         <Route path="/auth/register" element={<Registion />} />
+        <Route path="/bank/:id" element={<BankDetailsPage />} />
         <Route path="/auth/forget-password" element={<ForgetPassword />} />
         <Route path="/auth/email-validate" element={<EmailValidate />} />
         <Route path="*" element={<Login />} /> {/* or a NotFound page */}

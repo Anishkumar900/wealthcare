@@ -1,58 +1,33 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserProvider";
 import axios from "axios";
-import Loader from "../loader/Loader";
 import ExpensesEdit from "./ExpensesEdit";
+import { toast, Toaster } from "react-hot-toast";
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
 
-export default function ShowExpenses() {
+export default function ShowExpenses({ addedExpenses, setAddedExpenses }) {
     const { user } = useContext(UserContext);
     const [expenses, setExpenses] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [editExpenses, setEditExpenses] = useState({
         id: 0,
-        amount: 0,
+        amount: "",
         bank: "",
         expediterType: "",
         expenseDate: "",
         reason: "",
         requirement: "",
-        savedAmount: 0,
+        savedAmount: "",
         returnName: "",
         returnDate: "",
         returnStatus: "",
     })
     const [showEditExpenses, setShowEditExpenses] = useState(false);
 
-    useEffect(() => {
-        const fetchExpenses = async () => {
-            if (user) {
-                try {
-                    const token = localStorage.getItem("token");
-                    const response = await axios.get(`${baseURL}/api/v1/get-expenses`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
 
-                    setExpenses(response.data);
-                } catch (error) {
-                    console.error("Error fetching expenses:", error);
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                setLoading(false);
-            }
-        };
-
-        fetchExpenses();
-    }, [user]);
 
     const handleEdit = (id) => {
-        console.log("Edit clicked for ID:", id);
+        // console.log("Edit clicked for ID:", id);
 
         // 🔍 Find the expense by ID
         const expenseToEdit = expenses.find((exp) => exp.id === id);
@@ -81,18 +56,70 @@ export default function ShowExpenses() {
 
 
     const handleDelete = async (id) => {
-        console.log("Delete clicked for ID:", id);
-        // 👉 make DELETE API call here
-        setExpenses(expenses.filter((exp) => exp.id !== id));
+
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.delete(`${baseURL}/api/v1/delete-expenses`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                data: { id }, // ✅ Send only ID inside `data`
+            });
+            // ✅ Update UI after delete
+            setExpenses((prev) => prev.filter((exp) => exp.id !== id));
+            toast.success("Expense deleted successfully!");
+            // console.log("Expense deleted successfully");
+        } catch (error) {
+            toast.error("Failed to delete expense!");
+            // console.error("Error deleting expense:", error);
+        }
+    };
+
+    const handleUpdateExpense = (updatedExpense) => {
+        setExpenses((prev) =>
+            prev.map((exp) => (exp.id === updatedExpense.id ? updatedExpense : exp))
+        );
+        setShowEditExpenses(false); // Close modal after update
     };
 
     const formatValue = (val) => (val && val.trim() !== "" ? val : "---");
 
-    if (loading) return <Loader />;
+
+    const fetchExpenses = async () => {
+        if (user) {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(`${baseURL}/api/v1/get-expenses`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setExpenses(response.data);
+            } catch (error) {
+                console.error("Error fetching expenses:", error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchExpenses();
+    }, [user]);
+
+    useEffect(() => {
+        if (addedExpenses) {
+            fetchExpenses().then(() => setAddedExpenses(false));
+        }
+    }, [addedExpenses, setAddedExpenses]);
+
 
     return (
-        <div className="p-4">
-            <h2 className="text-xl font-bold mb-4">My Expenses</h2>
+        <div className="md:p-4 p-1">
+            <Toaster position="top-right" reverseOrder={false} />
+            <h2 className="text-xl font-semibold mb-4">My Expenses</h2>
             {expenses.length > 0 ? (
                 <div className="overflow-x-auto">
                     <table className="min-w-full border border-gray-300">
@@ -146,7 +173,7 @@ export default function ShowExpenses() {
                     </table>
                 </div>
             ) : (
-                <p>No expenses found.</p>
+                <p className="text-center text-red-600">No expenses found.</p>
             )}
             {showEditExpenses && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
@@ -160,7 +187,11 @@ export default function ShowExpenses() {
                             ✕
                         </button>
 
-                        <ExpensesEdit editExpenses={editExpenses} />
+                        <ExpensesEdit
+                            editExpenses={editExpenses}
+                            onUpdateExpense={handleUpdateExpense}
+                        />
+
                     </div>
                 </div>
             )}

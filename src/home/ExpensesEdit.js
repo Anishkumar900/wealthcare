@@ -7,13 +7,13 @@ const baseURL = process.env.REACT_APP_API_BASE_URL;
 export default function ExpensesEdit(props) {
     const [expenses, setExpenses] = useState({
         id: 0,
-        amount: 0,
+        amount: "",
         bank: "",
         expediterType: "",
         expenseDate: "",
         reason: "",
         requirement: "",
-        savedAmount: 0,
+        savedAmount: "",
         returnName: "",
         returnDate: "",
         returnStatus: "",
@@ -21,6 +21,8 @@ export default function ExpensesEdit(props) {
 
     const [decibleButton, setDecibleButton] = useState(false);
     const [correctdate, setCorrectDate] = useState(false);
+
+
 
     const handleChange = (e) => {
         setCorrectDate(false);
@@ -34,7 +36,7 @@ export default function ExpensesEdit(props) {
     const submitForm = (e) => {
         e.preventDefault();
         setDecibleButton(true);
-        // console.log(expenses);
+        // console.log("sumbit" ,expenses);
         if (
             new Date(expenses.expenseDate).setHours(0, 0, 0, 0) >
             new Date().setHours(0, 0, 0, 0)
@@ -55,18 +57,19 @@ export default function ExpensesEdit(props) {
             }
         )
             .then((response) => {
-                toast.success("Update successful!")
-                
+                toast.success("Update successful!");
+                if (props.onUpdateExpense) {
+                    // console.log(expenses);
+                    props.onUpdateExpense(expenses); // 👈 Pass updated expense back
+                }
             })
             .catch((error) => {
                 toast.error("Something worng!")
             })
             .finally(() => {
                 setDecibleButton(false);
-                
+
             });
-
-
 
     }
 
@@ -91,11 +94,14 @@ export default function ExpensesEdit(props) {
             <Toaster position="top-right" reverseOrder={false} />
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add Expenses</h2>
 
-            <form onSubmit={submitForm} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form
+                onSubmit={submitForm}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 sm:p-6"
+            >
                 {/* Date */}
-                <div>
-                    <label className="block text-gray-700 mb-1 flex items-center">
-                        Expense Date <span className="text-red-600 ml-1">*</span>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">
+                        Expense Date <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="date"
@@ -111,9 +117,9 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Reason */}
-                <div>
-                    <label className="block text-gray-700 mb-1 flex">
-                        Reason<span className="text-red-600 ml-1">*</span>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">
+                        Reason <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="text"
@@ -127,9 +133,9 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Amount */}
-                <div>
-                    <label className="block text-gray-700 mb-1 flex">
-                        Amount<span className="text-red-600 ml-1">*</span>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">
+                        Amount <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="number"
@@ -139,15 +145,14 @@ export default function ExpensesEdit(props) {
                         placeholder="Amount"
                         className="w-full p-2 border rounded focus:outline-none no-arrows"
                         required
-                        min="0"   // 👈 prevents negative input
+                        min="0"
                     />
-
                 </div>
 
                 {/* Requirement */}
-                <div>
-                    <label className="block text-gray-700 mb-1 flex">
-                        Requirement<span className="text-red-600 ml-1">*</span>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">
+                        Requirement <span className="text-red-600">*</span>
                     </label>
                     <select
                         name="requirement"
@@ -166,9 +171,9 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Saved Amount */}
-                <div>
-                    <label className="block text-gray-700 mb-1 flex">
-                        Saved Amount<span className="text-red-600 ml-1">*</span>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">
+                        Saved Amount <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="number"
@@ -183,9 +188,9 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Bank */}
-                <div>
-                    <label className="block text-gray-700 mb-1 flex">
-                        Bank<span className="text-red-600 ml-1">*</span>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">
+                        Bank <span className="text-red-600">*</span>
                     </label>
                     <select
                         name="bank"
@@ -218,9 +223,9 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Expediter Type */}
-                <div>
-                    <label className="block text-gray-700 mb-1 flex">
-                        Expediter Type<span className="text-red-600 ml-1">*</span>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">
+                        Expediter Type <span className="text-red-600">*</span>
                     </label>
                     <select
                         name="expediterType"
@@ -240,8 +245,8 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Return Date */}
-                <div>
-                    <label className="block text-gray-700 mb-1">Return Date</label>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">Return Date</label>
                     <input
                         type="date"
                         name="returnDate"
@@ -252,8 +257,8 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Return Name */}
-                <div>
-                    <label className="block text-gray-700 mb-1">Return Name</label>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">Return Name</label>
                     <input
                         type="text"
                         name="returnName"
@@ -265,8 +270,8 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Return Status */}
-                <div>
-                    <label className="block text-gray-700 mb-1">Return Status</label>
+                <div className="flex flex-col">
+                    <label className="text-gray-700 mb-1">Return Status</label>
                     <select
                         name="returnStatus"
                         value={expenses.returnStatus}
@@ -280,19 +285,23 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Submit Button */}
-                <div className="mt-6 flex justify-end col-span-2">
+                <div className="mt-6 flex justify-end col-span-1 md:col-span-2">
                     <button
                         type="submit"
                         disabled={decibleButton}
-                        className={` bg-[var(--legacy-interactive-color)] text-white rounded-lg px-4 py-2 m-4 transition ${decibleButton
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-[var(--legacy-interactive-color-hover)]"
+                        className={`bg-[var(--legacy-interactive-color)] text-white rounded-lg px-4 py-2 transition ${decibleButton
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:bg-[var(--legacy-interactive-color-hover)]"
                             }`}
                     >
                         {decibleButton ? "Submitting..." : "Submit"}
                     </button>
                 </div>
             </form>
+
+
+
+
         </div>
     )
 }

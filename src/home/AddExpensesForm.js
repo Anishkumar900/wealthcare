@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
 
-export default function AddMoneyForm() {
+export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
   const { user } = useContext(UserContext);
   const [correctdate, setCorrectDate] = useState(false);
   const [expenses, setExpenses] = useState({
@@ -57,6 +57,8 @@ export default function AddMoneyForm() {
         }
       );
       toast.success("Expense added successfully!");
+      setAddedExpenses(true);
+      closeForm();
       setExpenses((prev) => ({
         ...prev,
         expenseDate: "",
@@ -91,10 +93,13 @@ export default function AddMoneyForm() {
       <Toaster position="top-right" reverseOrder={false} />
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add Expenses</h2>
 
-      <form onSubmit={submitMoney} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form
+        onSubmit={submitMoney}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 px-2 sm:px-4"
+      >
         {/* Date */}
         <div>
-          <label className="block text-gray-700 mb-1 flex items-center">
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
             Expense Date <span className="text-red-600 ml-1">*</span>
           </label>
           <input
@@ -102,17 +107,19 @@ export default function AddMoneyForm() {
             name="expenseDate"
             value={expenses.expenseDate}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
           />
           {correctdate && (
-            <p className="text-red-600 text-xs">Expense date is in the future.</p>
+            <p className="text-red-600 text-xs sm:text-sm">
+              Expense date is in the future.
+            </p>
           )}
         </div>
 
         {/* Reason */}
         <div>
-          <label className="block text-gray-700 mb-1 flex">
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
             Reason<span className="text-red-600 ml-1">*</span>
           </label>
           <input
@@ -121,14 +128,14 @@ export default function AddMoneyForm() {
             value={expenses.reason}
             onChange={handleChange}
             placeholder="Reason"
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
           />
         </div>
 
         {/* Amount */}
         <div>
-          <label className="block text-gray-700 mb-1 flex">
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
             Amount<span className="text-red-600 ml-1">*</span>
           </label>
           <input
@@ -137,28 +144,25 @@ export default function AddMoneyForm() {
             value={expenses.amount}
             onChange={handleChange}
             placeholder="Amount"
-            className="w-full p-2 border rounded focus:outline-none no-arrows"
+            className="w-full p-2 border rounded focus:outline-none no-arrows text-sm sm:text-base"
             required
-            min="0"   // 👈 prevents negative input
+            min="0"
           />
-
         </div>
 
         {/* Requirement */}
         <div>
-          <label className="block text-gray-700 mb-1 flex">
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
             Requirement<span className="text-red-600 ml-1">*</span>
           </label>
           <select
             name="requirement"
             value={expenses.requirement}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
           >
-            <option value="" disabled>
-              Select Requirement
-            </option>
+            <option value="" disabled>Select Requirement</option>
             <option value="Compulsory">Compulsory</option>
             <option value="Required">Required</option>
             <option value="Optional">Optional</option>
@@ -167,7 +171,7 @@ export default function AddMoneyForm() {
 
         {/* Saved Amount */}
         <div>
-          <label className="block text-gray-700 mb-1 flex">
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
             Saved Amount<span className="text-red-600 ml-1">*</span>
           </label>
           <input
@@ -176,7 +180,7 @@ export default function AddMoneyForm() {
             value={expenses.savedAmount}
             onChange={handleChange}
             placeholder="Saved Amount"
-            className="w-full p-2 border rounded focus:outline-none no-arrows"
+            className="w-full p-2 border rounded focus:outline-none no-arrows text-sm sm:text-base"
             required
             min="0"
           />
@@ -184,19 +188,17 @@ export default function AddMoneyForm() {
 
         {/* Bank */}
         <div>
-          <label className="block text-gray-700 mb-1 flex">
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
             Bank<span className="text-red-600 ml-1">*</span>
           </label>
           <select
             name="bank"
             value={expenses.bank}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
           >
-            <option value="" disabled>
-              Select Bank
-            </option>
+            <option value="" disabled>Select Bank</option>
             <option value="SBI">State Bank of India (SBI)</option>
             <option value="HDFC">HDFC Bank</option>
             <option value="ICICI">ICICI Bank</option>
@@ -219,19 +221,17 @@ export default function AddMoneyForm() {
 
         {/* Expediter Type */}
         <div>
-          <label className="block text-gray-700 mb-1 flex">
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
             Expediter Type<span className="text-red-600 ml-1">*</span>
           </label>
           <select
             name="expediterType"
             value={expenses.expediterType}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
           >
-            <option value="" disabled>
-              Select Type
-            </option>
+            <option value="" disabled>Select Type</option>
             <option value="Personal Use">Personal Use</option>
             <option value="Friend">Friend</option>
             <option value="Family">Family</option>
@@ -241,37 +241,37 @@ export default function AddMoneyForm() {
 
         {/* Return Date */}
         <div>
-          <label className="block text-gray-700 mb-1">Return Date</label>
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Return Date</label>
           <input
             type="date"
             name="returnDate"
             value={expenses.returnDate}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
           />
         </div>
 
         {/* Return Name */}
         <div>
-          <label className="block text-gray-700 mb-1">Return Name</label>
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Return Name</label>
           <input
             type="text"
             name="returnName"
             value={expenses.returnName}
             onChange={handleChange}
             placeholder="Return Name"
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
           />
         </div>
 
         {/* Return Status */}
         <div>
-          <label className="block text-gray-700 mb-1">Return Status</label>
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Return Status</label>
           <select
             name="returnStatus"
             value={expenses.returnStatus}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none"
+            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
           >
             <option value="">Select Status</option>
             <option value="pending">Pending</option>
@@ -280,19 +280,23 @@ export default function AddMoneyForm() {
         </div>
 
         {/* Submit Button */}
-        <div className="mt-6 flex justify-end col-span-2">
+        <div className="mt-6 flex justify-end col-span-1 md:col-span-2">
           <button
             type="submit"
             disabled={decibleButton}
-            className={` bg-[var(--legacy-interactive-color)] text-white rounded-lg px-4 py-2 m-4 transition ${decibleButton
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-[var(--legacy-interactive-color-hover)]"
+            className={`w-full sm:w-auto bg-[var(--legacy-interactive-color)] text-white rounded-lg px-4 py-2 m-2 transition ${decibleButton
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-[var(--legacy-interactive-color-hover)]"
               }`}
           >
             {decibleButton ? "Submitting..." : "Submit"}
           </button>
         </div>
       </form>
+
+
+
+
     </div>
   );
 }

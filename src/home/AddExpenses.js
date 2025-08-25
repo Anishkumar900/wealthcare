@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import AddMoneyForm from './AddMoneyForm';
+import React, { useState, useEffect } from 'react';
+import AddExpensesForm from './AddExpensesForm';
+import ShowExpenses from './ShowExpenses';
+import { useNavigate } from 'react-router-dom';
 
-export default function AddMoney() {
+export default function AddExpenses() {
   const [showForm, setShowForm] = useState(false);
   const [decibleButton, setDecibleButton] = useState(false);
+  const [addedExpenses, setAddedExpenses] = useState(false);
+  const [decibleBankButton,setDecibleBankButton]=useState(false);
+  const navigate = useNavigate();
 
   const showAddmoneyForm = () => {
     setDecibleButton(true);
@@ -15,8 +20,14 @@ export default function AddMoney() {
     setShowForm(false);
   };
 
+  const bankSection = () => {
+    setDecibleBankButton(true);
+    navigate('/bank');
+  }
+
   // 👉 Prevent background scroll when modal is open
   useEffect(() => {
+    setDecibleBankButton(false);
     if (showForm) {
       document.body.style.overflow = "hidden";
     } else {
@@ -37,7 +48,18 @@ export default function AddMoney() {
         onClick={showAddmoneyForm}
         disabled={decibleButton}
       >
-        Add Money
+        Add Expense
+      </button>
+
+      <button
+        className={` bg-[var(--legacy-interactive-color)] text-white rounded-lg px-4 py-2 m-4 transition ${decibleBankButton
+          ? "opacity-50 cursor-not-allowed"
+          : "hover:bg-[var(--legacy-interactive-color-hover)]"
+          }`}
+        disabled={decibleBankButton}
+        onClick={bankSection}
+      >
+        Bank
       </button>
 
       {/* Modal with blurred background */}
@@ -59,10 +81,15 @@ export default function AddMoney() {
             </button>
 
             {/* The actual form */}
-            <AddMoneyForm />
+            <AddExpensesForm setAddedExpenses={setAddedExpenses} closeForm={closeForm} />
           </div>
         </div>
       )}
+
+      <ShowExpenses
+        addedExpenses={addedExpenses}
+        setAddedExpenses={setAddedExpenses}
+      />
     </div>
   );
 }

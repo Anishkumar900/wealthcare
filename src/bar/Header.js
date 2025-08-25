@@ -18,8 +18,13 @@ export default function Header() {
     navigate("/");
   }
 
+   const goToHome = () => {
+    navigate("/home");
+  };
+
   useEffect(() => {
     if (user?.name) {
+      // console.log(user);
       setProfile({
         name: user.name.split(" ")[0],
         profileImage: user.profileImage || ""
@@ -36,6 +41,7 @@ export default function Header() {
           src="/image/logo.png"
           alt="Wealth Care logo"
           className="round w-16 h-16 cursor-pointer"
+          onClick={goToHome}
         />
 
         {/* Profile Section */}
