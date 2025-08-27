@@ -1,22 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import { UserContext } from '../context/UserProvider';
 import axios from 'axios';
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
 
-export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
+export default function AddExpensesForm({ setAddLend, closeForm }) {
   const { user } = useContext(UserContext);
   const [correctdate, setCorrectDate] = useState(false);
-  const [expenses, setExpenses] = useState({
+  const [lend, setLend] = useState({
     email: "",
-    expenseDate: "",
+    lendDate: "",
     reason: "",
     amount: "",
     requirement: "",
-    savedAmount: "",
     bank: "",
-    expediterType: "",
     returnDate: "",
     returnName: "",
     returnStatus: "",
@@ -27,16 +25,15 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
   const handleChange = (e) => {
     setCorrectDate(false);
     const { name, value } = e.target;
-    setExpenses({ ...expenses, [name]: value });
+    setLend({ ...lend, [name]: value });
   };
 
   const submitMoney = async (e) => {
     e.preventDefault();
     setDecibleButton(true);
     toast.dismiss();
-    // console.log(expenses);
     if (
-      new Date(expenses.expenseDate).setHours(0, 0, 0, 0) >
+      new Date(lend.lendDate).setHours(0, 0, 0, 0) >
       new Date().setHours(0, 0, 0, 0)
     ) {
       setCorrectDate(true);
@@ -44,11 +41,13 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
       return;
     }
 
+    // console.log(lend);
+
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `${baseURL}/api/v1/add-expense`,
-        expenses,
+        `${baseURL}/api/v1/add-lend`,
+        lend,
         {
           headers: {
             "Content-Type": "application/json",
@@ -56,18 +55,16 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
           },
         }
       );
-      toast.success("Expense added successfully!");
-      setAddedExpenses(true);
+      toast.success("Lend borrow added successfully!");
+      setAddLend(true);
       closeForm();
-      setExpenses((prev) => ({
+      setLend((prev) => ({
         ...prev,
-        expenseDate: "",
+        lendDate: "",
         reason: "",
         amount: "",
         requirement: "",
-        savedAmount: "",
         bank: "",
-        expediterType: "",
         returnDate: "",
         returnName: "",
         returnStatus: "",
@@ -75,7 +72,6 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
       // console.log(response);
     } catch (error) {
       toast.error("Something went wrong!");
-      // console.log(error);
     } finally {
       setDecibleButton(false);
       setCorrectDate(false);
@@ -84,14 +80,14 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
 
   useEffect(() => {
     if (user) {
-      setExpenses((prev) => ({ ...prev, email: user.email }));
+      setLend((prev) => ({ ...prev, email: user.email }));
     }
   }, [user]);
 
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl md:p-6 p-2">
       <Toaster position="top-right" reverseOrder={false} />
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add Expenses</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add Lend Borrow</h2>
 
       <form
         onSubmit={submitMoney}
@@ -100,12 +96,12 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
         {/* Date */}
         <div>
           <label className="block text-gray-700 mb-1 text-sm sm:text-base">
-            Expense Date <span className="text-red-600 ml-1">*</span>
+            Lend Borrow Date <span className="text-red-600 ml-1">*</span>
           </label>
           <input
             type="date"
-            name="expenseDate"
-            value={expenses.expenseDate}
+            name="lendDate"
+            value={lend.lendDate}
             onChange={handleChange}
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
@@ -125,7 +121,7 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
           <input
             type="text"
             name="reason"
-            value={expenses.reason}
+            value={lend.reason}
             onChange={handleChange}
             placeholder="Reason"
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
@@ -141,12 +137,27 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
           <input
             type="number"
             name="amount"
-            value={expenses.amount}
-            onChange={handleChange}
+            value={lend.amount}
+            // onChange={handleChange}
+            onChange={(e) => {
+              let value = e.target.value;
+
+              // ✅ allow empty input
+              if (value === "") {
+                setLend({ ...lend, amount: "" });
+                return;
+              }
+
+              // ✅ allow only up to 2 decimals
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                setLend({ ...lend, amount: value });
+              }
+            }}
             placeholder="Amount"
             className="w-full p-2 border rounded focus:outline-none no-arrows text-sm sm:text-base"
             required
-            min="0"
+            // min="0"
+            step="0.01"
           />
         </div>
 
@@ -157,7 +168,7 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
           </label>
           <select
             name="requirement"
-            value={expenses.requirement}
+            value={lend.requirement}
             onChange={handleChange}
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
@@ -169,22 +180,6 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
           </select>
         </div>
 
-        {/* Saved Amount */}
-        <div>
-          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
-            Saved Amount<span className="text-red-600 ml-1">*</span>
-          </label>
-          <input
-            type="number"
-            name="savedAmount"
-            value={expenses.savedAmount}
-            onChange={handleChange}
-            placeholder="Saved Amount"
-            className="w-full p-2 border rounded focus:outline-none no-arrows text-sm sm:text-base"
-            required
-            min="0"
-          />
-        </div>
 
         {/* Bank */}
         <div>
@@ -193,7 +188,7 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
           </label>
           <select
             name="bank"
-            value={expenses.bank}
+            value={lend.bank}
             onChange={handleChange}
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
             required
@@ -219,33 +214,14 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
           </select>
         </div>
 
-        {/* Expediter Type */}
-        <div>
-          <label className="block text-gray-700 mb-1 text-sm sm:text-base">
-            Expediter Type<span className="text-red-600 ml-1">*</span>
-          </label>
-          <select
-            name="expediterType"
-            value={expenses.expediterType}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
-            required
-          >
-            <option value="" disabled>Select Type</option>
-            <option value="Personal Use">Personal Use</option>
-            <option value="Friend">Friend</option>
-            <option value="Family">Family</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
 
         {/* Return Date */}
         <div>
-          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Return Date</label>
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Lend Borrow Return Date</label>
           <input
             type="date"
             name="returnDate"
-            value={expenses.returnDate}
+            value={lend.returnDate}
             onChange={handleChange}
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
           />
@@ -253,11 +229,11 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
 
         {/* Return Name */}
         <div>
-          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Return Name</label>
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Lend Borrow Return Name</label>
           <input
             type="text"
             name="returnName"
-            value={expenses.returnName}
+            value={lend.returnName}
             onChange={handleChange}
             placeholder="Return Name"
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
@@ -266,10 +242,10 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
 
         {/* Return Status */}
         <div>
-          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Return Status</label>
+          <label className="block text-gray-700 mb-1 text-sm sm:text-base">Lend Borrow Return Status</label>
           <select
             name="returnStatus"
-            value={expenses.returnStatus}
+            value={lend.returnStatus}
             onChange={handleChange}
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base"
           >
@@ -285,8 +261,8 @@ export default function AddExpensesForm({ setAddedExpenses, closeForm }) {
             type="submit"
             disabled={decibleButton}
             className={`w-full sm:w-auto bg-[var(--legacy-interactive-color)] text-white rounded-lg px-4 py-2 m-2 transition ${decibleButton
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-[var(--legacy-interactive-color-hover)]"
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-[var(--legacy-interactive-color-hover)]"
               }`}
           >
             {decibleButton ? "Submitting..." : "Submit"}

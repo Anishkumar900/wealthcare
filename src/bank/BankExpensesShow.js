@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
-
+import DeleteConfirmation from "../conformation/DeleteConfirmation";
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
-export default function BankExpensesShow({ bankId, bank, setBank,refreshKey  }) {
+
+export default function BankExpensesShow({ bankId, bank, setBank, refreshKey }) {
     const [expenses, setExpenses] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [selectedExpense, setSelectedExpense] = useState(null);
 
     // ✅ Fetch expenses when component loads
-    //   console.log(bankId)
     useEffect(() => {
         toast.dismiss();
 
@@ -25,37 +27,49 @@ export default function BankExpensesShow({ bankId, bank, setBank,refreshKey  }) 
                     }
                 );
 
-                // console.log(res.data);
                 setExpenses(res.data);
             } catch (err) {
-                // console.error(err);
                 toast.error("Failed to load expenses");
             }
         };
 
         fetchExpenses();
-    }, [bankId,refreshKey]);
-
+    }, [bankId, refreshKey]);
 
     // ✅ Handle delete
-    const handleDelete = async (expense) => {
+    const handleDelete = async () => {
+        if (!selectedExpense) return;
+
+        // console.log("Deleting expense ID:", selectedExpense.id);
+        // setOpen(false);
+
         try {
             const token = localStorage.getItem("token");
-            await axios.delete(`${baseURL}/api/v1/bank/expenses/delete-expenses-bank/${expense.id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            }); // 🔹 adjust backend endpoint
-            setExpenses((prev) => prev.filter((exp) => exp.id !== expense.id));
+            await axios.delete(
+                `${baseURL}/api/v1/bank/expenses/delete-expenses-bank/${selectedExpense.id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // ✅ Remove from local state
+            setExpenses((prev) => prev.filter((exp) => exp.id !== selectedExpense.id));
+
+            // ✅ Update bank amount
             setBank((prev) => ({
                 ...prev,
-                amount: Number(prev.amount) + Number(expense.amount),
+                amount: Number(prev.amount) + Number(selectedExpense.amount),
             }));
+
             toast.success("Expense deleted and amount restored!");
         } catch (err) {
-            // console.error(err);
             toast.error("Failed to delete expense");
+        } finally {
+            setOpen(false);
+            setSelectedExpense(null);
         }
     };
 
@@ -87,7 +101,10 @@ export default function BankExpensesShow({ bankId, bank, setBank,refreshKey  }) 
                                     <td className="px-4 py-2 text-sm font-semibold text-green-600">₹{exp.amount}</td>
                                     <td className="px-4 py-2 text-center">
                                         <button
-                                            onClick={() => handleDelete(exp)}
+                                            onClick={() => {
+                                                setSelectedExpense(exp); // ✅ store clicked expense
+                                                setOpen(true);
+                                            }}
                                             className="text-red-500 hover:text-red-700 font-medium text-sm"
                                         >
                                             🗑 Delete
@@ -99,6 +116,14 @@ export default function BankExpensesShow({ bankId, bank, setBank,refreshKey  }) 
                     </table>
                 </div>
             )}
+
+            {/* ✅ Only ONE modal for all rows */}
+            <DeleteConfirmation
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                onConfirm={handleDelete}
+                itemName={selectedExpense?.reason || "Expense"}
+            />
         </div>
     );
 }

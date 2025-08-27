@@ -5,6 +5,7 @@ import Footer from "../bar/Footer";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import BankExpensesShow from "./BankExpensesShow";
+import Loader from "../loader/Loader";
 // import { motion, AnimatePresence } from "framer-motion";
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
@@ -123,7 +124,7 @@ export default function BankDetailsPage() {
         setShowExpenses(false);
     }
 
-    if (loading) return <p className="text-center mt-10">Loading...</p>;
+    if (loading) return <Loader/>;
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -241,7 +242,24 @@ export default function BankDetailsPage() {
                                                 type="number"
                                                 name="amount"
                                                 value={expenses.amount}
-                                                onChange={handleChange}
+                                                // onChange={handleChange}
+                                                onChange={(e) => {
+                                                    let value = e.target.value;
+
+                                                    // ✅ allow empty input
+                                                    if (value === "") {
+                                                        setExpenses({ ...expenses, amount: "" });
+                                                        return;
+                                                    }
+
+                                                    // ✅ allow only up to 2 decimals
+                                                    if (/^\d*\.?\d{0,2}$/.test(value)) {
+                                                        setExpenses({ ...expenses, amount: value });
+                                                    }
+                                                }}
+
+                                                min="0"
+                                                step="0.01"
                                                 placeholder="Enter amount"
                                                 className="mt-1 w-full p-2 border rounded-lg focus:outline-none text-sm sm:text-base no-arrows"
                                                 required

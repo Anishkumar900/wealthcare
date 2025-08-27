@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import AddExpensesForm from './AddExpensesForm';
-import ShowExpenses from './ShowExpenses';
+import ShowLendBorrow from './ShowLendBorrow';
 import { useNavigate } from 'react-router-dom';
 
-export default function AddExpenses() {
+export default function LendBorrow() {
   const [showForm, setShowForm] = useState(false);
   const [decibleButton, setDecibleButton] = useState(false);
-  const [addedExpenses, setAddedExpenses] = useState(false);
+  const [addedLend, setAddLend] = useState(false);
   const [decibleBankButton,setDecibleBankButton]=useState(false);
   const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ export default function AddExpenses() {
         onClick={showAddmoneyForm}
         disabled={decibleButton}
       >
-        Add Expense
+        Add Lend Borrow
       </button>
 
       <button
@@ -81,14 +81,14 @@ export default function AddExpenses() {
             </button>
 
             {/* The actual form */}
-            <AddExpensesForm setAddedExpenses={setAddedExpenses} closeForm={closeForm} />
+            <AddExpensesForm setAddLend={setAddLend} closeForm={closeForm} />
           </div>
         </div>
       )}
 
-      <ShowExpenses
-        addedExpenses={addedExpenses}
-        setAddedExpenses={setAddedExpenses}
+      <ShowLendBorrow
+        addedLend={addedLend}
+        setAddLend={setAddLend}
       />
     </div>
   );

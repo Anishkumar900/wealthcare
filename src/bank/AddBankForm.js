@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
-export default function AddBankForm({ setDisableAddBankButton,onBankAdded }) {
+export default function AddBankForm({ setDisableAddBankButton, onBankAdded }) {
   const { user } = useContext(UserContext);
   const [disableSubmitButton, setDisableSubmitButton] = useState(false);
   const [bankDetails, SetBankDetails] = useState({
@@ -41,7 +41,12 @@ export default function AddBankForm({ setDisableAddBankButton,onBankAdded }) {
       mobileNumber: bankDetails.mobileNumber === "" ? null : bankDetails.mobileNumber,
     };
 
-    // console.log(payload.isActive);
+    if (bankDetails.mobileNumber.length != 10) {
+      toast.error("Please enter a valid mobile number!");
+      setDisableSubmitButton(false);
+      return;
+    }
+
 
     try {
       const token = localStorage.getItem("token");
@@ -56,7 +61,7 @@ export default function AddBankForm({ setDisableAddBankButton,onBankAdded }) {
         }
       )
       toast.success("Bank add successful!");
-       if (onBankAdded) {
+      if (onBankAdded) {
         onBankAdded(response.data);  // assuming API returns created bank object
       }
       setTimeout(() => {
@@ -66,10 +71,10 @@ export default function AddBankForm({ setDisableAddBankButton,onBankAdded }) {
     }
     catch (error) {
       // console.log(error.response.data.status);
-      if(error.response.data.status===409){
+      if (error.response.data.status === 409) {
         toast.error("Please enter a valid account number!");
       }
-      else{
+      else {
         toast.error("Failed to add bank. Please try again.");
       }
     }
@@ -165,8 +170,23 @@ export default function AddBankForm({ setDisableAddBankButton,onBankAdded }) {
             type="number"
             name="amount"
             value={bankDetails.amount}
-            onChange={handleChange}
+            // onChange={handleChange}
+            onChange={(e) => {
+              let value = e.target.value;
+
+              // ✅ Allow empty input
+              if (value === "") {
+                SetBankDetails((prev) => ({ ...prev, amount: "" }));
+                return;
+              }
+
+              // ✅ Allow only numbers with up to 2 decimal places
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                SetBankDetails((prev) => ({ ...prev, amount: value }));
+              }
+            }}
             min="0"
+            step="0.01"
             className="w-full p-2 border rounded focus:outline-none text-sm sm:text-base no-arrows"
           />
         </div>
@@ -241,6 +261,7 @@ export default function AddBankForm({ setDisableAddBankButton,onBankAdded }) {
             name="mobileNumber"
             value={bankDetails.mobileNumber}
             onChange={(e) => {
+
               if (e.target.value.length <= 10) {
                 handleChange(e);
               }
@@ -249,6 +270,7 @@ export default function AddBankForm({ setDisableAddBankButton,onBankAdded }) {
             className="md:w-2/4 w-full p-2 border rounded focus:outline-none text-sm sm:text-base no-arrows"
             required
           />
+
         </div>
 
         {/* Submit Button */}

@@ -7,6 +7,7 @@ import ForgetPassword from './authentication/ForgetPassword';
 import EmailValidate from './authentication/EmailValidate';
 import Bank from './bank/Bank';
 import BankDetailsPage from './bank/BankDetailsPage';
+import Profile from './profile/Profile';
 
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/auth/forget-password" element={<ForgetPassword />} />
         <Route path="/auth/email-validate" element={<EmailValidate />} />
         <Route path="*" element={<Login />} /> {/* or a NotFound page */}
+        <Route path='/profile' element={<Profile/>}/>
       </Routes>
     </div>
   )

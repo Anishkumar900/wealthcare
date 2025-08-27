@@ -32,6 +32,10 @@ export default function Header() {
     }
   }, [user]);
 
+  const ogToProfile=()=>{
+   navigate("/profile");
+  }
+
   return (
     <>
       {/* Top Header */}
@@ -74,7 +78,9 @@ export default function Header() {
       {/* Dropdown */}
       {showOption && (
         <div className="fixed right-4 top-20 bg-black text-white rounded-md shadow-lg p-3 w-40">
-          <button className="w-full text-left hover:bg-gray-800 px-2 py-1 rounded">
+          <button className="w-full text-left hover:bg-gray-800 px-2 py-1 rounded"
+          onClick={ogToProfile}
+          >
             Profile
           </button>
           <button className="w-full text-left hover:bg-gray-800 px-2 py-1 rounded flex items-center" onClick={logout}>

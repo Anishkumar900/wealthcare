@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useContext, useEffect, useState } from 'react';
+import {useEffect, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import { IoMdEyeOff } from "react-icons/io";
 import { IoEye } from "react-icons/io5";
@@ -64,6 +64,7 @@ export default function Login() {
   useEffect(() => {
     // console.log(process.env.REACT_APP_API_BASE_URL);
     const fetchData = async () => {
+      toast.dismiss();
       const token = localStorage.getItem("token");
 
       if (!token) {

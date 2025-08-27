@@ -4,16 +4,14 @@ import { Toaster, toast } from 'react-hot-toast';
 
 
 const baseURL = process.env.REACT_APP_API_BASE_URL;
-export default function ExpensesEdit(props) {
+export default function LendBorrowEdit(props) {
     const [expenses, setExpenses] = useState({
         id: 0,
         amount: "",
         bank: "",
-        expediterType: "",
-        expenseDate: "",
+        lendDate: "",
         reason: "",
         requirement: "",
-        savedAmount: "",
         returnName: "",
         returnDate: "",
         returnStatus: "",
@@ -36,6 +34,7 @@ export default function ExpensesEdit(props) {
     const submitForm = (e) => {
         e.preventDefault();
         setDecibleButton(true);
+        toast.dismiss();
         // console.log("sumbit" ,expenses);
         if (
             new Date(expenses.expenseDate).setHours(0, 0, 0, 0) >
@@ -47,7 +46,7 @@ export default function ExpensesEdit(props) {
         }
         const token = localStorage.getItem("token");
         axios.patch(
-            `${baseURL}/api/v1/edit-expenses`,  // ✅ Make sure this endpoint supports PATCH
+            `${baseURL}/api/v1/edit-lend`,  // ✅ Make sure this endpoint supports PATCH
             expenses,
             {
                 headers: {
@@ -78,21 +77,20 @@ export default function ExpensesEdit(props) {
             id: props.editExpenses.id,
             amount: props.editExpenses.amount,
             bank: props.editExpenses.bank,
-            expediterType: props.editExpenses.expediterType,
-            expenseDate: props.editExpenses.expenseDate,
+            lendDate: props.editExpenses.lendDate,
             reason: props.editExpenses.reason,
             requirement: props.editExpenses.requirement,
-            savedAmount: props.editExpenses.savedAmount,
             returnName: props.editExpenses.returnName,
             returnDate: props.editExpenses.returnDate,
             returnStatus: props.editExpenses.returnStatus,
         })
+        // console.log(props.editExpenses);
 
     }, [props])
     return (
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl md:p-6 p-2">
             <Toaster position="top-right" reverseOrder={false} />
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add Expenses</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Edit Lend Borrow</h2>
 
             <form
                 onSubmit={submitForm}
@@ -101,18 +99,18 @@ export default function ExpensesEdit(props) {
                 {/* Date */}
                 <div className="flex flex-col">
                     <label className="text-gray-700 mb-1">
-                        Expense Date <span className="text-red-600">*</span>
+                        Lend Date <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="date"
-                        name="expenseDate"
-                        value={expenses.expenseDate}
+                        name="lendDate"
+                        value={expenses.lendDate}
                         onChange={handleChange}
                         className="w-full p-2 border rounded focus:outline-none"
                         required
                     />
                     {correctdate && (
-                        <p className="text-red-600 text-xs">Expense date is in the future.</p>
+                        <p className="text-red-600 text-xs">Lend date is in the future.</p>
                     )}
                 </div>
 
@@ -141,11 +139,26 @@ export default function ExpensesEdit(props) {
                         type="number"
                         name="amount"
                         value={expenses.amount}
-                        onChange={handleChange}
+                        // onChange={handleChange}
+                        onChange={(e) => {
+                            let value = e.target.value;
+
+                            // ✅ allow empty input
+                            if (value === "") {
+                                setExpenses({ ...expenses, amount: "" });
+                                return;
+                            }
+
+                            // ✅ allow only up to 2 decimals
+                            if (/^\d*\.?\d{0,2}$/.test(value)) {
+                                setExpenses({ ...expenses, amount: value });
+                            }
+                        }}
                         placeholder="Amount"
                         className="w-full p-2 border rounded focus:outline-none no-arrows"
                         required
                         min="0"
+                        step="0.01"
                     />
                 </div>
 
@@ -171,7 +184,7 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Saved Amount */}
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                     <label className="text-gray-700 mb-1">
                         Saved Amount <span className="text-red-600">*</span>
                     </label>
@@ -185,7 +198,7 @@ export default function ExpensesEdit(props) {
                         required
                         min="0"
                     />
-                </div>
+                </div> */}
 
                 {/* Bank */}
                 <div className="flex flex-col">
@@ -223,7 +236,7 @@ export default function ExpensesEdit(props) {
                 </div>
 
                 {/* Expediter Type */}
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                     <label className="text-gray-700 mb-1">
                         Expediter Type <span className="text-red-600">*</span>
                     </label>
@@ -242,7 +255,7 @@ export default function ExpensesEdit(props) {
                         <option value="Family">Family</option>
                         <option value="Other">Other</option>
                     </select>
-                </div>
+                </div> */}
 
                 {/* Return Date */}
                 <div className="flex flex-col">
@@ -290,8 +303,8 @@ export default function ExpensesEdit(props) {
                         type="submit"
                         disabled={decibleButton}
                         className={`bg-[var(--legacy-interactive-color)] text-white rounded-lg px-4 py-2 transition ${decibleButton
-                                ? "opacity-50 cursor-not-allowed"
-                                : "hover:bg-[var(--legacy-interactive-color-hover)]"
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-[var(--legacy-interactive-color-hover)]"
                             }`}
                     >
                         {decibleButton ? "Submitting..." : "Submit"}
