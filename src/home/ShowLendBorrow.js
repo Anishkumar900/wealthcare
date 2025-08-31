@@ -108,10 +108,12 @@ export default function ShowLendBorrow({ addedLend, setAddLend }) {
   };
 
   useEffect(() => {
+    
     fetchExpenses();
   }, [user]);
 
   useEffect(() => {
+    
     if (addedLend) {
       fetchExpenses().then(() => setAddLend(false));
     }

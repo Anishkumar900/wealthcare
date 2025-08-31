@@ -5,16 +5,16 @@ import { IoMdEyeOff } from "react-icons/io";
 import { IoEye } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import Loader from '../loader/Loader';
 
-
+const baseURL = process.env.REACT_APP_API_BASE_URL;
 export default function Login() {
 
   const [form, setForm] = useState({
     email: "",
     password: ""
   })
-  const baseURL = process.env.REACT_APP_API_BASE_URL;
-
+  const [loader,setLoader]=useState(false);
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(true);
@@ -73,6 +73,7 @@ export default function Login() {
       }
 
       try {
+        setLoader(true);
         const jwt = { token };
         const response = await axios.post(
           `${baseURL}/api/auth/v1/jwt-verify`,
@@ -85,20 +86,22 @@ export default function Login() {
         // token valid → go to home page
         if (response.status === 200) {
           // setUser(response.data);
+          setLoader(false)
           navigate("/home"); // or your desired route
         }
       } catch (error) {
         // token invalid → clear and go to login
         // console.error("JWT verification failed:", error);
         localStorage.removeItem("token");
+        setLoader(false);
         navigate("/");
       }
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate,loader]);
 
-
+  if(loader) return <Loader/>
 
   return (
     <div className='min-h-screen w-full bg-slate-100 lg:px-40  pt-3'>

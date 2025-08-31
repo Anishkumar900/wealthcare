@@ -10,7 +10,7 @@ export default function Footer() {
       <p className='md:text-center font-sans md:text-3xl text-xl'>Wealth Care</p>
       <ul className="md:flex md:space-x-10 text-gray-500 justify-center py-4">
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/home">Home</Link>
         </li>
         <li>
           <Link to="/bank">Bank</Link>

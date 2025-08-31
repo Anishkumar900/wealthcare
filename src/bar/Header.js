@@ -3,10 +3,12 @@ import { CgProfile } from "react-icons/cg";
 import { TbLogout2 } from "react-icons/tb";
 import { UserContext } from '../context/UserProvider';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../loader/Loader';
 
 
 export default function Header() {
   const { user } = useContext(UserContext);
+  const [loader,setLoader]=useState(false);
   const [showOption, setShowOption] = useState(false);
   const [profile, setProfile] = useState({ name: "", profileImage: "" });
   const navigate = useNavigate();
@@ -23,18 +25,22 @@ export default function Header() {
   };
 
   useEffect(() => {
+    setLoader(true);
     if (user?.name) {
       // console.log(user);
       setProfile({
         name: user.name.split(" ")[0],
         profileImage: user.profileImage || ""
       });
+      setLoader(false);
     }
   }, [user]);
 
   const ogToProfile=()=>{
    navigate("/profile");
   }
+
+  if(loader) return <Loader/>
 
   return (
     <>
