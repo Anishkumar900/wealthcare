@@ -1,5 +1,3 @@
-// import React from 'react'
-// import Loader from '../loader/Loader'
 import Header from '../bar/Header'
 import Footer from '../bar/Footer'
 import ProfileCart from './ProfileCart'

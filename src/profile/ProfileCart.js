@@ -81,8 +81,8 @@ export default function ProfileCart() {
 
         <div className="pt-16">
             <Toaster position="top-right" reverseOrder={false} />
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-100">
-                <div className="bg-white shadow-xl rounded-2xl p-8 w-80 flex flex-col items-center">
+            <div className=" flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-100">
+                <div className="bg-white shadow-xl rounded-2xl p-6 w-80 flex flex-col items-center m-4">
                     {userDetails?.profileImage ? (
                         <img
                             src={userDetails.profileImage}
